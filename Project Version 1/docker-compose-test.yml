@@ -1,0 +1,32 @@
+
+version: "3"
+
+services:
+              
+  half_machine:
+    image: aitabbou/jupyter-notebook:1.0
+    container_name: half_machine
+    # networks:
+    #   - crsa_big_data_net
+    environment:
+      - JUPYTER_TOKEN=samir
+    ports:
+      - "8889:8889"
+    volumes:
+      - half_machine:/app
+
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2'  # Set the CPU limit to 6 (6 CPU cores)
+          memory: 5G  # Set the memory limit to 15G
+        reservations:
+          cpus: '2'
+          memory: 5G 
+
+  
+
+volumes:
+  half_machine:
+   
