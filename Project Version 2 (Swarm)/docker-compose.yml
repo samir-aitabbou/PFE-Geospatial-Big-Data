@@ -97,7 +97,7 @@ services:
       resources:
         limits:
           cpus: '2'  # Set the CPU limit to 6 (2 CPU cores)
-          memory: 5G  # Set the memory limit to 5G
+          memory: 5G  # Set the memory limit to 5G .
         reservations:
           cpus: '2'
           memory: 5G 
