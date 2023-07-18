@@ -1,0 +1,162 @@
+version: "3"
+
+services:
+                                  # ******** HADOOP CLUSTER ************ #
+  namenode:
+    image: aitabbou/namenode:1.0
+    container_name: namenode
+    networks:
+      - crsa_big_data_net
+    restart: always
+    ports:
+      - 9870:9870
+      - 9000:9000
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+
+  
+  datanode:
+    image: aitabbou/datanode:1.0
+    container_name: datanode
+    networks:
+      - crsa_big_data_net
+    restart: always
+    volumes:
+      - hadoop_datanode:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    ports:
+      - "9864:9864"
+
+
+
+                                 # ******** SPARK CLUSTER ************ #
+  spark-master:
+    image: aitabbou/spark-master:1.0
+    container_name: spark-master
+    networks:
+      - crsa_big_data_net
+  
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+  
+  # for the moment i will not use docker swarm for workers scaling, instead i will create all workers manuelly
+  spark-worker-1:
+    image: aitabbou/spark-worker:1.0
+    container_name: spark-worker-1
+    networks:
+      - crsa_big_data_net
+    depends_on:
+      - spark-master
+    ports:
+      - "8081:8081"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2'  # Set the CPU limit to 6 (2 CPU cores)
+          memory: 5G  # Set the memory limit to 5G
+        reservations:
+          cpus: '2'
+          memory: 5G 
+
+
+  spark-worker-2:
+    image: aitabbou/spark-worker:1.0
+    container_name: spark-worker-2
+    networks:
+      - crsa_big_data_net
+    depends_on:
+      - spark-master
+    ports:
+      - "8082:8081"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2'  # Set the CPU limit to 6 (2 CPU cores)
+          memory: 5G  # Set the memory limit to 5G
+        reservations:
+          cpus: '2'
+          memory: 5G 
+
+
+
+  spark-worker-3:
+    image: aitabbou/spark-worker:1.0
+    container_name: spark-worker-3
+    networks:
+      - crsa_big_data_net
+    depends_on:
+      - spark-master
+    ports:
+      - "8083:8081"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2'  # Set the CPU limit to 6 (2 CPU cores)
+          memory: 5G  # Set the memory limit to 5G
+        reservations:
+          cpus: '2'
+          memory: 5G 
+
+
+
+  spark-worker-4:
+    image: aitabbou/spark-worker:1.0
+    container_name: spark-worker-4
+    networks:
+      - crsa_big_data_net
+    depends_on:
+      - spark-master
+    ports:
+      - "8084:8081"
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2'  # Set the CPU limit to 6 (2 CPU cores)
+          memory: 5G  # Set the memory limit to 5G
+        reservations:
+          cpus: '2'
+          memory: 5G 
+
+                                 # ******** JUPYTER NOTEBOOK ************ #
+
+
+  jupyter-notebook:
+    image: aitabbou/jupyter-notebook:1.0
+    container_name: jupyter-notebook
+    networks:
+      - crsa_big_data_net
+    environment:
+      - JUPYTER_TOKEN=samir
+    ports:
+      - "8888:8888"
+    volumes:
+      - jupyter_notebooks:/app
+
+
+                                 # ******** SPARK DASHBOARD ************ #
+
+
+  Spark-dashboard:
+      image: aitabbou/spark-dashboard:1.0
+      container_name: spark-dashboard
+      networks:
+        - crsa_big_data_net
+
+
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode:
+  hadoop_historyserver:
+  jupyter_notebooks:
+   
+
+
+networks:
+  crsa_big_data_net:
