@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  web:
+    
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: django_backend
+    
+    networks:
+      - crsa_big_data_net
+ 
+    ports:
+      - "8001:8000"
+
+    # volumes:
+    #   - ../Django_Backend_Project:/app/Django_Backend_Project
+
+  #   depends_on:
+  #     - spark-master
+
+  # spark-master:
+  #   image: bitnami/spark:3
+  #   environment:
+  #     - SPARK_MODE=master
+  #     - SPARK_MASTER_PORT_NUMBER=7077
+  #     - SPARK_MASTER_WEBUI_PORT_NUMBER=8080
+  #   ports:
+  #     - "7077:7077"
+  #     - "8080:8080"
+
+
+networks:
+  crsa_big_data_net:
